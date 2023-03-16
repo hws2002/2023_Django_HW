@@ -5,33 +5,33 @@ stages:
   - test
   - deploy
 
-build:
-  stage: build
-  script:
-    - export BUILD_IMAGE_NAME=$CI_REGISTRY_IMAGE
-    - export BUILD_IMAGE_TAG=$CI_COMMIT_REF_SLUG
-    - export BUILD_IMAGE_USERNAME=$CI_REGISTRY_USER
-    - export BUILD_IMAGE_PASSWORD=$CI_REGISTRY_PASSWORD
-    - deployer build
-  # TODO Start: [Student] Set as only master
-
-
-  # TODO End: [Student] Set as only master
+# build:
+#   stage: build
+#   script:
+#     - export BUILD_IMAGE_NAME=$CI_REGISTRY_IMAGE
+#     - export BUILD_IMAGE_TAG=$CI_COMMIT_REF_SLUG
+#     - export BUILD_IMAGE_USERNAME=$CI_REGISTRY_USER
+#     - export BUILD_IMAGE_PASSWORD=$CI_REGISTRY_PASSWORD
+#     - deployer build
+#   # TODO Start: [Student] Set as only master
+#   only:
+#     - master
+#   # TODO End: [Student] Set as only master
 
 unit-test:
   # TODO Start: [Student] Set job image
-  image: 
+  image: python:3.9
   # TODO End: [Student] Set job image
   stage: test
   before_script:
     # TODO Start: [Student] Install dependencies
-    - 
+    - pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -r requirements.txt
     # TODO End: [Student] Install dependencies
   script:
     # TODO Start: [Student] Migrate and run tests
-    - 
-    - 
-    - 
+    - python manage.py makemigrations
+    - python manage.py migrate
+    - python3 manage.py test
     # TODO End: [Student] Migrate and run tests
   after_script:
     - SUFFIX=$RANDOM
@@ -45,6 +45,6 @@ deploy:
     - export DEPLOY_ENV=$GITLAB_USER_LOGIN
     - deployer dyno replace backend $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG gitlab-ci-token $REGISTRY_PWD
   # TODO Start: [Student] Set as only master
-
-
+  only:
+    - master
   # TODO End: [Student] Set as only master
